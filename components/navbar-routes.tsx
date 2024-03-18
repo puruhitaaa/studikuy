@@ -1,18 +1,17 @@
 "use client";
 
-import { UserButton, useAuth } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { isTeacher } from "@/lib/teacher";
 
 import { SearchInput } from "./search-input";
 
 export const NavbarRoutes = () => {
-  const { userId } = useAuth();
   const pathname = usePathname();
+  const { user } = useUser();
 
   const isTeacherPage = pathname?.startsWith("/teacher");
   const isCoursePage = pathname?.includes("/courses");
@@ -33,17 +32,15 @@ export const NavbarRoutes = () => {
               Exit
             </Button>
           </Link>
-        ) : isTeacher(userId) ? (
+        ) : user?.publicMetadata.role === "teacher" ? (
           <Link href="/teacher/courses">
             <Button size="sm" variant="ghost">
               Teacher mode
             </Button>
           </Link>
         ) : null}
-        <UserButton
-          afterSignOutUrl="/"
-        />
+        <UserButton afterSignOutUrl="/" />
       </div>
     </>
-  )
-}
+  );
+};

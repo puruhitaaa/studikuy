@@ -1,3 +1,7 @@
-export const isTeacher = (userId?: string | null) => {
-  return userId === process.env.NEXT_PUBLIC_TEACHER_ID;
-}
+import { auth } from "@clerk/nextjs";
+
+export const isTeacher = () => {
+  const { sessionClaims } = auth();
+
+  return sessionClaims?.metadata.role === "teacher";
+};
